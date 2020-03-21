@@ -42,6 +42,6 @@ namespace SlideDotNet.Services.Builders
         /// <summary>
         /// Builds a group shape which has grouped shape items.
         /// </summary>
-        ShapeEx WithGroup(IInnerTransform innerTransform, IShapeContext spContext, IEnumerable<ShapeEx> groupedShapes);
+        ShapeEx WithGroup(IInnerTransform innerTransform, IShapeContext spContext, IList<ShapeEx> groupedShapes);
     }
 }

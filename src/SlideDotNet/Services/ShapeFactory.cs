@@ -56,7 +56,7 @@ namespace SlideDotNet.Services
 
             sdkShapeHandler.Successor = sdkGroupShapeHandler;
             sdkGroupShapeHandler.Successor = oleGrFrameHandler;
-            // OLE objects handler must be before pictures handler, cause OLE container can contain p:pic elements, thereby OLE as a picture
+            // OLE objects handler must be before pictures handler, cause OLE container can contain p:pic elements, thereby defining OLE as a picture
             oleGrFrameHandler.Successor = pictureHandler;
             pictureHandler.Successor = chartGrFrameHandler;
             chartGrFrameHandler.Successor = tableGrFrameHandler;

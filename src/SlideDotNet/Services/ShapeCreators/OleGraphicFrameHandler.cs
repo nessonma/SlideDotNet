@@ -17,6 +17,7 @@ namespace SlideDotNet.Services
         private readonly SlidePart _sdkSldPart;
         private readonly InnerTransformFactory _transformFactory;
         private readonly IShapeBuilder _shapeBuilder;
+
         private const string Uri = "http://schemas.openxmlformats.org/presentationml/2006/ole";
 
         public OleGraphicFrameHandler(IPreSettings preSettings,

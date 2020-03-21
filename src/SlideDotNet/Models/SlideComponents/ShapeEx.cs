@@ -384,7 +384,7 @@ namespace SlideDotNet.Models.SlideComponents
             /// <summary>
             /// <inheritdoc cref="IShapeBuilder.WithGroup"/>
             /// </summary>
-            public ShapeEx WithGroup(IInnerTransform innerTransform, IShapeContext spContext, IEnumerable<ShapeEx> groupedShapes)
+            public ShapeEx WithGroup(IInnerTransform innerTransform, IShapeContext spContext, IList<ShapeEx> groupedShapes)
             {
                 Check.NotNull(innerTransform, nameof(innerTransform));
                 Check.NotNull(spContext, nameof(spContext));
@@ -392,7 +392,7 @@ namespace SlideDotNet.Models.SlideComponents
 
                 var newShape = new ShapeEx(innerTransform, spContext, ShapeContentType.Group)
                 {
-                    GroupedShapes = groupedShapes.ToList()
+                    GroupedShapes = groupedShapes
                 };
 
                 return newShape;
