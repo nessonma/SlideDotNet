@@ -18,7 +18,7 @@ namespace SlideDotNet.Models
         #region Fields
 
         private PresentationDocument _xmlDoc;
-        private readonly Lazy<ISlideCollection> _slides;
+        private readonly Lazy<EditAbleCollection<Slide>> _slides;
         private bool _disposed;
 
         #endregion Fields
@@ -28,7 +28,7 @@ namespace SlideDotNet.Models
         /// <summary>
         /// <inheritdoc cref="IPresentation.Slides"/>
         /// </summary>
-        public ISlideCollection Slides => _slides.Value;
+        public EditAbleCollection<Slide> Slides => _slides.Value;
 
         /// <summary>
         /// <inheritdoc cref="IPresentation.SlideWidth"/>
@@ -52,7 +52,7 @@ namespace SlideDotNet.Models
             ThrowIfInvalid(pptxPath);
             _xmlDoc = PresentationDocument.Open(pptxPath, true);
             ThrowIfSlidesNumberLarge();
-            _slides = new Lazy<ISlideCollection>(InitSlides);
+            _slides = new Lazy<EditAbleCollection<Slide>>(InitSlides);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace SlideDotNet.Models
             ThrowIfInvalid(pptxStream);
             _xmlDoc = PresentationDocument.Open(pptxStream, true);
             ThrowIfSlidesNumberLarge();
-            _slides = new Lazy<ISlideCollection>(InitSlides);
+            _slides = new Lazy<EditAbleCollection<Slide>>(InitSlides);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace SlideDotNet.Models
             pptxStream.Write(pptxBytes, 0, pptxBytes.Length);
             _xmlDoc = PresentationDocument.Open(pptxStream, true);
             ThrowIfSlidesNumberLarge();
-            _slides = new Lazy<ISlideCollection>(InitSlides);
+            _slides = new Lazy<EditAbleCollection<Slide>>(InitSlides);
         }
 
         #endregion Constructors
@@ -129,7 +129,7 @@ namespace SlideDotNet.Models
 
         #region Private Methods
 
-        private ISlideCollection InitSlides()
+        private EditAbleCollection<Slide> InitSlides()
         {
             var preSettings = new PreSettings(_xmlDoc.PresentationPart.Presentation);
             var slideCollection = SlideCollection.Create(_xmlDoc, preSettings);

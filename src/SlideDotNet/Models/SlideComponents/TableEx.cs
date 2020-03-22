@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using SlideDotNet.Collections;
 using SlideDotNet.Models.Settings;
 using SlideDotNet.Models.TableComponents;
 using A = DocumentFormat.OpenXml.Drawing;
@@ -8,6 +10,24 @@ using P = DocumentFormat.OpenXml.Presentation;
 
 namespace SlideXML.Models.SlideComponents
 {
+    public class RowsCollection : EditAbleCollection<RowEx>
+    {
+        public override void Remove(RowEx item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+
+        }
+
+        public RowsCollection(IEnumerable<RowEx> rows)
+        {
+            CollectionItems = new List<RowEx>(rows);
+        }
+    }
+
     /// <summary>
     /// Represents a table element on a slide.
     /// </summary>
@@ -15,52 +35,44 @@ namespace SlideXML.Models.SlideComponents
     {
         #region Fields
 
-        private List<RowEx> _rows;
-        private readonly P.GraphicFrame _xmlGrFrame;
+        private Lazy<RowsCollection> _rowsCollection;
+        private readonly P.GraphicFrame _sdkGrFrame;
         private readonly IShapeContext _spContext;
 
         #endregion Fields
 
         #region Properties
 
-        public IList<RowEx> Rows
-        {
-            get
-            {
-                if (_rows == null)
-                {
-                    ParseRows();
-                }
-
-                return _rows;
-            }
-        }
+        public RowsCollection Rows => _rowsCollection.Value;
 
         #endregion Properties
 
         #region Constructors
 
         /// <summary>
-        /// Initialise an instance of <see cref="TableEx"/> class.
+        /// Initializes an instance of the <see cref="TableEx"/> class.
         /// </summary>
         public TableEx(P.GraphicFrame xmlGrFrame, IShapeContext spContext)
         {
-            _xmlGrFrame = xmlGrFrame;
-            _spContext = spContext;
+            _sdkGrFrame = xmlGrFrame ?? throw new ArgumentNullException(nameof(xmlGrFrame));
+            _spContext = spContext ?? throw new ArgumentNullException(nameof(spContext));
+            _rowsCollection = new Lazy<RowsCollection>(GetRowsCollection());
         }
 
         #endregion Constructors
 
         #region Private Methods
 
-        private void ParseRows()
+        private RowsCollection GetRowsCollection()
         {
-            var xmlRows = _xmlGrFrame.Descendants<A.Table>().Single().Elements<A.TableRow>();
-            _rows = new List<RowEx>(xmlRows.Count());
-            foreach (var r in xmlRows)
+            var sdkTableRows = _sdkGrFrame.Descendants<A.Table>().First().Elements<A.TableRow>();
+            var rows = new List<RowEx>(sdkTableRows.Count());
+            foreach (var sdkTblRow in sdkTableRows)
             {
-                _rows.Add(new RowEx(r, _spContext));
+                rows.Add(new RowEx(sdkTblRow, _spContext));
             }
+
+            return new RowsCollection(rows);
         }
 
         #endregion Private Methods
