@@ -1,33 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SlideDotNet.Collections;
 using SlideDotNet.Models.Settings;
-using SlideDotNet.Models.TableComponents;
+using SlideDotNet.Models.SlideComponents;
 using A = DocumentFormat.OpenXml.Drawing;
 using P = DocumentFormat.OpenXml.Presentation;
 // ReSharper disable All
 
-namespace SlideXML.Models.SlideComponents
+namespace SlideDotNet.Models.TableComponents
 {
-    public class RowsCollection : EditAbleCollection<RowEx>
-    {
-        public override void Remove(RowEx item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveAt(int index)
-        {
-
-        }
-
-        public RowsCollection(IEnumerable<RowEx> rows)
-        {
-            CollectionItems = new List<RowEx>(rows);
-        }
-    }
-
     /// <summary>
     /// Represents a table element on a slide.
     /// </summary>
@@ -65,14 +46,9 @@ namespace SlideXML.Models.SlideComponents
 
         private RowsCollection GetRowsCollection()
         {
-            var sdkTableRows = _sdkGrFrame.Descendants<A.Table>().First().Elements<A.TableRow>();
-            var rows = new List<RowEx>(sdkTableRows.Count());
-            foreach (var sdkTblRow in sdkTableRows)
-            {
-                rows.Add(new RowEx(sdkTblRow, _spContext));
-            }
+            var sdkTblRows = _sdkGrFrame.Descendants<A.Table>().First().Elements<A.TableRow>();
 
-            return new RowsCollection(rows);
+            return new RowsCollection(sdkTblRows, _spContext);
         }
 
         #endregion Private Methods

@@ -17,7 +17,7 @@ namespace SlideDotNet.Models
     {
         #region Fields
 
-        private PresentationDocument _xmlDoc;
+        private PresentationDocument _sdkPre;
         private readonly Lazy<EditAbleCollection<Slide>> _slides;
         private bool _disposed;
 
@@ -33,12 +33,12 @@ namespace SlideDotNet.Models
         /// <summary>
         /// <inheritdoc cref="IPresentation.SlideWidth"/>
         /// </summary>
-        public int SlideWidth => _xmlDoc.PresentationPart.Presentation.SlideSize.Cx.Value;
+        public int SlideWidth => _sdkPre.PresentationPart.Presentation.SlideSize.Cx.Value;
 
         /// <summary>
         /// <inheritdoc cref="IPresentation.SlideHeight"/>
         /// </summary>
-        public int SlideHeight => _xmlDoc.PresentationPart.Presentation.SlideSize.Cy.Value;
+        public int SlideHeight => _sdkPre.PresentationPart.Presentation.SlideSize.Cy.Value;
 
         #endregion Properties
 
@@ -50,7 +50,7 @@ namespace SlideDotNet.Models
         public PresentationEx(string pptxPath)
         {
             ThrowIfInvalid(pptxPath);
-            _xmlDoc = PresentationDocument.Open(pptxPath, true);
+            _sdkPre = PresentationDocument.Open(pptxPath, true);
             ThrowIfSlidesNumberLarge();
             _slides = new Lazy<EditAbleCollection<Slide>>(InitSlides);
         }
@@ -62,7 +62,7 @@ namespace SlideDotNet.Models
         public PresentationEx(Stream pptxStream)
         {
             ThrowIfInvalid(pptxStream);
-            _xmlDoc = PresentationDocument.Open(pptxStream, true);
+            _sdkPre = PresentationDocument.Open(pptxStream, true);
             ThrowIfSlidesNumberLarge();
             _slides = new Lazy<EditAbleCollection<Slide>>(InitSlides);
         }
@@ -76,7 +76,7 @@ namespace SlideDotNet.Models
             ThrowIfInvalid(pptxBytes);
             var pptxStream = new MemoryStream();
             pptxStream.Write(pptxBytes, 0, pptxBytes.Length);
-            _xmlDoc = PresentationDocument.Open(pptxStream, true);
+            _sdkPre = PresentationDocument.Open(pptxStream, true);
             ThrowIfSlidesNumberLarge();
             _slides = new Lazy<EditAbleCollection<Slide>>(InitSlides);
         }
@@ -91,7 +91,7 @@ namespace SlideDotNet.Models
         public void SaveAs(string filePath)
         {
             Check.NotEmpty(filePath, nameof(filePath));
-            _xmlDoc = (PresentationDocument)_xmlDoc.SaveAs(filePath);
+            _sdkPre = (PresentationDocument)_sdkPre.SaveAs(filePath);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace SlideDotNet.Models
         public void SaveAs(Stream stream)
         {
             Check.NotNull(stream, nameof(stream));
-            _xmlDoc = (PresentationDocument)_xmlDoc.Clone(stream);
+            _sdkPre = (PresentationDocument)_sdkPre.Clone(stream);
         }
 
         /// <summary>
@@ -113,8 +113,10 @@ namespace SlideDotNet.Models
             {
                 return;
             }
-            _xmlDoc.Close();
+            _sdkPre.Close();
             _disposed = true;
+
+            
         }
 
         /// <summary>
@@ -131,8 +133,8 @@ namespace SlideDotNet.Models
 
         private EditAbleCollection<Slide> InitSlides()
         {
-            var preSettings = new PreSettings(_xmlDoc.PresentationPart.Presentation);
-            var slideCollection = SlideCollection.Create(_xmlDoc, preSettings);
+            var preSettings = new PreSettings(_sdkPre.PresentationPart.Presentation);
+            var slideCollection = SlideCollection.Create(_sdkPre, preSettings);
 
             return slideCollection;
         }
@@ -172,7 +174,7 @@ namespace SlideDotNet.Models
 
         private void ThrowIfSlidesNumberLarge()
         {
-            var nbSlides = _xmlDoc.PresentationPart.SlideParts.Count();
+            var nbSlides = _sdkPre.PresentationPart.SlideParts.Count();
             if (nbSlides > Limitations.MaxSlidesNumber)
             {
                 Close();

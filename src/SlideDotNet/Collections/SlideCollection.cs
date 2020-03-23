@@ -14,7 +14,6 @@ namespace SlideDotNet.Collections
     {
         #region Fields
 
-        private readonly List<Slide> _slides;
         private readonly PresentationDocument _sdkPre;
         private readonly Dictionary<Slide, SlideNumber> _sldNumEntities;
 
@@ -24,21 +23,21 @@ namespace SlideDotNet.Collections
 
         private SlideCollection(List<Slide> slides, PresentationDocument sdkPre, Dictionary<Slide, SlideNumber> sldNumEntities)
         {
-            _slides = slides;
+            CollectionItems = slides;
             _sdkPre = sdkPre;
             _sldNumEntities = sldNumEntities;
         }
 
         #endregion Constructors
 
-        public override void Remove(Slide item)
+        public override void Remove(Slide innerRow)
         {
             //TODO: validate case when last slide is deleted
-            Check.NotNull(item, nameof(item));
+            Check.NotNull(innerRow, nameof(innerRow));
 
-            RemoveFromDom(item.Number);
+            RemoveFromDom(innerRow.Number);
             _sdkPre.PresentationPart.Presentation.Save(); // save the modified presentation
-            _slides.Remove(item);
+            CollectionItems.Remove(innerRow);
             UpdateNumbers();
         }
 
@@ -118,7 +117,7 @@ namespace SlideDotNet.Collections
         private void UpdateNumbers()
         {
             var current = 0;
-            foreach (var slide in _slides)
+            foreach (var slide in CollectionItems)
             {
                 current++;
                 _sldNumEntities[slide].Number = current;

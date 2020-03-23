@@ -3,11 +3,6 @@ using System.Collections.Generic;
 
 namespace SlideDotNet.Collections
 {
-    public abstract class EditAbleCollection<T> : LibraryCollection<T>
-    {
-        public abstract void Remove(T item);
-    }
-
     /// <summary>
     /// An abstract library collection.
     /// </summary>

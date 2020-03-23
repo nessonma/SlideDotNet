@@ -7,8 +7,9 @@ using SlideDotNet.Services.Builders;
 using SlideDotNet.Validation;
 using P = DocumentFormat.OpenXml.Presentation;
 using A = DocumentFormat.OpenXml.Drawing;
+using OleObject = SlideDotNet.Models.SlideComponents.OleObject;
 
-namespace SlideDotNet.Services
+namespace SlideDotNet.Services.ShapeCreators
 {
     public class OleGraphicFrameHandler : OpenXmlElementHandler
     {

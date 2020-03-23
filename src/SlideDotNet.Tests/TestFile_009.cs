@@ -456,7 +456,7 @@ namespace SlideDotNet.Tests
         }
 
         [Fact]
-        public void Table_Rows_RemoveAt_Test()
+        public void Table_Row_Remove_Test()
         {
             // ARRANGE
             var pre = new PresentationEx(Properties.Resources._009);
@@ -472,7 +472,7 @@ namespace SlideDotNet.Tests
             pre.SaveAs(ms);
             pre.Close();
 
-            pre = new PresentationEx(Properties.Resources._009);
+            pre = new PresentationEx(ms);
             table3 = pre.Slides[2].Shapes.First(s => s.Id.Equals(3)).Table;
             rows = table3.Rows;
             var numRowsAfter = rows.Count;
